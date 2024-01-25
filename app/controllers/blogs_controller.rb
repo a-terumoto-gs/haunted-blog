@@ -10,9 +10,9 @@ class BlogsController < ApplicationController
   end
 
   def show
-    if @blog.secret? && !@blog.owned_by?(current_user)
-      raise ActiveRecord::RecordNotFound.new("Not authorized")
-    end
+    return unless @blog.secret? && !@blog.owned_by?(current_user)
+
+    raise ActiveRecord::RecordNotFound.new, 'Unauthorized'
   end
 
   def new
@@ -20,7 +20,7 @@ class BlogsController < ApplicationController
   end
 
   def edit
-      raise ActiveRecord::RecordNotFound.new("Not authorized") unless @blog.owned_by?(current_user)
+    raise ActiveRecord::RecordNotFound, 'Unauthorized' unless @blog.owned_by?(current_user)
   end
 
   def create
@@ -34,7 +34,8 @@ class BlogsController < ApplicationController
   end
 
   def update
-    raise ActiveRecord::RecordNotFound.new("Not authorized") unless @blog.owned_by?(current_user)
+    raise ActiveRecord::RecordNotFound, 'Unauthorized' unless @blog.owned_by?(current_user)
+
     if @blog.update(blog_params)
       redirect_to blog_url(@blog), notice: 'Blog was successfully updated.'
     else
@@ -43,7 +44,8 @@ class BlogsController < ApplicationController
   end
 
   def destroy
-    raise ActiveRecord::RecordNotFound.new("Not authorized") unless @blog.owned_by?(current_user)
+    raise ActiveRecord::RecordNotFound, 'Unauthorized' unless @blog.owned_by?(current_user)
+
     @blog.destroy!
 
     redirect_to blogs_url, notice: 'Blog was successfully destroyed.', status: :see_other

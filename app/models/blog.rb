@@ -9,10 +9,10 @@ class Blog < ApplicationRecord
 
   before_save :adjust_random_eyecatch
 
-  scope :published, -> { where(secret:false) }
+  scope :published, -> { where(secret: false) }
 
   scope :search, lambda { |term|
-    where("title LIKE ? OR content LIKE ?", "%#{term}%", "%#{term}%")
+    where('title LIKE :term OR content LIKE :term', term: "%#{term}%")
   }
 
   scope :default_order, -> { order(id: :desc) }
@@ -20,7 +20,7 @@ class Blog < ApplicationRecord
   def owned_by?(target_user)
     user == target_user
   end
-  
+
   def adjust_random_eyecatch
     self.random_eyecatch = false unless user.premium?
   end
