@@ -17,6 +17,10 @@ class Blog < ApplicationRecord
 
   scope :default_order, -> { order(id: :desc) }
 
+  scope :owned_by, ->(user) { where(user: user) }
+
+  scope :secret_and_owned, ->(user) { published.where.not(user: user) }
+
   def owned_by?(target_user)
     user == target_user
   end
