@@ -22,9 +22,6 @@ class BlogsController < ApplicationController
   end
 
   def create
-    if !current_user.premium?
-      params[:blog][:random_eyecatch] = false
-    end
     @blog = current_user.blogs.new(blog_params)
 
     if @blog.save
@@ -37,9 +34,6 @@ class BlogsController < ApplicationController
   def update
     @blog = Blog.owned_by(current_user).find(params[:id])
 
-    if !current_user.premium?
-      params[:blog][:random_eyecatch] = false
-    end
 
     if @blog.update(blog_params)
       redirect_to blog_url(@blog), notice: 'Blog was successfully updated.'
@@ -63,6 +57,8 @@ class BlogsController < ApplicationController
   end
 
   def blog_params
-    params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
+    default_permitted_params = [:title, :content, :secret]
+    default_permitted_params << :random_eyecatch if current_user.premium?
+    params.require(:blog).permit(default_permitted_params)
   end
 end
