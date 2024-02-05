@@ -17,9 +17,7 @@ class BlogsController < ApplicationController
     @blog = Blog.new
   end
 
-  def edit
-    @blog = Blog.owned_by(current_user).find(params[:id])
-  end
+  def edit; end
 
   def create
     @blog = current_user.blogs.new(blog_params)
@@ -32,8 +30,6 @@ class BlogsController < ApplicationController
   end
 
   def update
-    @blog = Blog.owned_by(current_user).find(params[:id])
-
     if @blog.update(blog_params)
       redirect_to blog_url(@blog), notice: 'Blog was successfully updated.'
     else
@@ -42,8 +38,6 @@ class BlogsController < ApplicationController
   end
 
   def destroy
-    @blog = Blog.owned_by(current_user).find(params[:id])
-
     @blog.destroy!
 
     redirect_to blogs_url, notice: 'Blog was successfully destroyed.', status: :see_other
@@ -52,7 +46,7 @@ class BlogsController < ApplicationController
   private
 
   def set_blog
-    @blog = Blog.find(params[:id])
+    @blog = Blog.owned_by(current_user).find(params[:id])
   end
 
   def blog_params
