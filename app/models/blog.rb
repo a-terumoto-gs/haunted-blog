@@ -17,7 +17,7 @@ class Blog < ApplicationRecord
 
   scope :owned_by, ->(user) { where(user:) }
 
-  scope :not_secret_or_owned, ->(user) { published.or(where(user:)) }
+  scope :published_or_owned_by, ->(user) { published.or(owned_by(user))}
 
   def owned_by?(target_user)
     user == target_user
